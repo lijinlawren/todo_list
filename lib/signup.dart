@@ -34,7 +34,7 @@ class _signupState extends State<signup> {
     if(response.statusCode == 200){
       //print('SignIn Successfull');
       Fluttertoast.showToast(
-          msg: "SignedIn Success",
+          msg: "Signed in success",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
