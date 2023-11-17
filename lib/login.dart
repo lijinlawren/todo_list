@@ -7,7 +7,6 @@ import 'package:todo_list/config_data.dart';
 import 'package:todo_list/home.dart';
 import 'package:todo_list/signup.dart';
 import 'package:http/http.dart' as http;
-import 'package:todo_list/terms.dart';
 
 class login extends StatefulWidget {
   const login({super.key});
@@ -24,7 +23,7 @@ class _loginState extends State<login> {
 
   bool isLoading = false;
 
-  IconData ic = Icons.visibility;
+  IconData ic = Icons.visibility_off_rounded;
 
 
   Future<void> loginFn() async {
@@ -170,10 +169,10 @@ class _loginState extends State<login> {
 
                             if(_eyeclick == true){
                               _eyeclick = false;
-                              ic = Icons.visibility_off_rounded;
+                              ic = Icons.visibility_rounded;
                             }else{
                               _eyeclick = true;
-                              ic = Icons.visibility;
+                              ic = Icons.visibility_off_rounded;
                             }
 
                           });
