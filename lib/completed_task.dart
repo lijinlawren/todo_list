@@ -101,10 +101,6 @@ class _completed_taskState extends State<completed_task> {
     }
   }
 
-  Future<void> _refresh() async {
-    return Future.delayed(Duration(seconds: 1));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

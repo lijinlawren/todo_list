@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Todo-WishList',
-      theme: ThemeData(fontFamily: 'Montserrat'),
+      theme: ThemeData(fontFamily: 'Montserrat', useMaterial3: false),
+
       home: SlashScreen(),
     );
   }

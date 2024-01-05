@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_list/config_data.dart';
 import 'package:todo_list/home.dart';
 import 'package:todo_list/signup.dart';
@@ -33,6 +34,8 @@ class _loginState extends State<login> {
       'Password': _password.text,
     });
 
+    print('response.statusCode : ${response.statusCode}');
+
     if(response.statusCode == 200){
       if(response.body.toString() == '[]'){
         //print('Please enter valid Username or Password');
@@ -40,14 +43,7 @@ class _loginState extends State<login> {
           isLoading = false;
         });
         Fluttertoast.showToast(
-            msg: "Login failed! please check your username and password",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.grey.shade300,
-            textColor: Colors.black,
-            fontSize: 16.0
-        );
+            msg: "Login failed! please check your username and password",);
       }
       else{
         var jsonData = json.decode(response.body);
@@ -60,6 +56,9 @@ class _loginState extends State<login> {
             _password.text = '';
             isLoading = false;
           });
+
+          saveusernamepass(_userName.text, _password.text);
+
           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) =>
               home1(user_ID: jsonObt['User_ID'], username: jsonObt['User_Name'], useremail: jsonObt['Email'],userpassword: jsonObt['Password'],userage: jsonObt['Age'],fullname: jsonObt['Name'],)));
 
@@ -67,20 +66,45 @@ class _loginState extends State<login> {
         }
       }
     }else{
-      //print('Sign In Success');
       Fluttertoast.showToast(
           msg: "Welcome Back",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
           backgroundColor: Colors.grey.shade300,
-          textColor: Colors.black,
-          fontSize: 16.0
       );
     }
   }
   
   bool _eyeclick = true;
+
+
+  Future<void> saveusernamepass(String uname, upass) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('User_Name', uname);
+    await prefs.setString('Password', upass);
+  }
+
+  Future<void> emailID(String uname) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('User_Name', uname);
+  }
+
+  Future<void> uPassword(String upassword) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('Password', upassword);
+  }
+
+  Future<void> getPref() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? uname = await prefs.getString('User_Name');
+    final String? upassword = await prefs.getString('Password');
+
+    setState(() {
+      _userName.text = uname!;
+      _password.text = upassword!;
+
+      loginFn();
+    });
+  }
+
 
   Future<void> guestFn() async {
     final url = Uri.parse('${MyConfigs.hostIP}guest.php');
@@ -96,12 +120,6 @@ class _loginState extends State<login> {
         });
         Fluttertoast.showToast(
             msg: "Login failed! please check your username and password",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.grey.shade300,
-            textColor: Colors.black,
-            fontSize: 16.0
         );
       }
       else{
@@ -120,12 +138,6 @@ class _loginState extends State<login> {
       //print('Sign In Success');
       Fluttertoast.showToast(
           msg: "Welcome Back",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey.shade300,
-          textColor: Colors.black,
-          fontSize: 16.0
       );
     }
   }
@@ -187,23 +199,16 @@ class _loginState extends State<login> {
                               //print('enter your username');
                               Fluttertoast.showToast(
                                   msg: "Please enter valid username",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
                                   backgroundColor: Colors.grey.shade300,
                                   textColor: Colors.black,
-                                  fontSize: 16.0
+
                               );
                             }else if(_password.text.isEmpty){
                               //print('enter your Password');
                               Fluttertoast.showToast(
                                   msg: "Please enter valid password",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
                                   backgroundColor: Colors.grey.shade300,
                                   textColor: Colors.black,
-                                  fontSize: 16.0
                               );
                             }else{
                               setState(() {
@@ -212,12 +217,8 @@ class _loginState extends State<login> {
                               loginFn();
                               Fluttertoast.showToast(
                                   msg: "Loading! Please wait",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
                                   backgroundColor: Colors.grey.shade300,
                                   textColor: Colors.black,
-                                  fontSize: 16.0
                               );
                             }
 
@@ -274,5 +275,10 @@ class _loginState extends State<login> {
         ],
       ),
     );
+  }
+  @override
+  void initState() {
+    getPref();
+    super.initState();
   }
 }
